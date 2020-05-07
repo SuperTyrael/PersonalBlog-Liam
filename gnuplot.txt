@@ -1,0 +1,2 @@
+unset key
+plot "map.out" with lines
