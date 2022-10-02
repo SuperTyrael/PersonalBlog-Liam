@@ -1,0 +1,43 @@
+{% extends "backend/base.html" %}
+{% block title %}
+    Server Log
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            <h3><b>Server Log</b></h3>
+            <div class="table-responsive">
+                {% if logs %}
+                    <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>File name</th>
+                        <th>Description</th>
+                        <th>Updated at</th>
+                        <th>Path</th>
+                        <th>Size</th>
+                        <th>Operation</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for log in logs %}
+                        <tr>
+                            <td><i class="fa fa-file-text-o"></i> {{ log[0] }}</td>
+                            <td><i class="fa fa-contao"></i> {{ log[1] }}</td>
+                            <td><i class="fa fa-clock-o"></i> {{ log[2] }}</td>
+                            <td><i class="fa fa-folder-o"></i> {{ log[3] }}</td>
+                            <td><i class="fa fa-signal"></i> {{ log[4] }}</td>
+                            <td>
+                                <button class="btn btn-info" style="margin-bottom: 3px;"><a title="查看日志" style="color: inherit; text-decoration: none;" href="/backend/logs/detail/{{ log[3] }}/">Check</a></button>
+                                <button class="btn btn-success" style="margin-bottom: 3px;"><a title="下载备份日志" style="color: inherit; text-decoration: none;" href="/backend/logs/download/?filename={{ log[3] }}">Backup</a></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

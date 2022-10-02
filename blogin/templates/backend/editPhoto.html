@@ -1,0 +1,52 @@
+{% extends "backend/base.html" %}
+{% from "macro.html" import render_pagination %}
+{% block title %}
+    Photo Edit
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            {% include "_flash.html" %}
+            <h3><b>Photo Management</b></h3>
+            <div class="table-responsive">
+                {% if photos %}
+                    <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Time</th>
+                        <th>Photo</th>
+                        <th>Operation</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for photo in photos %}
+                        <tr>
+                            <td><i class="fa fa-user"></i> {{ photo.title }}</td>
+                            <td><i class="fa fa-envelope-o"></i> {{ photo.description }}</td>
+                            <td><i class="fa fa-tag"></i> {{ photo.create_time }}</td>
+                            <td>
+                                <a href="/gallery/photo/{{ photo.id }}"><img style="height: 100px;width: 100px" class="img-fluid" src="{{ photo.save_path_s }}"></a>
+                            </td>
+                            <td>
+                                {% if photo.level == 0 %}
+                                    <button class="btn btn-danger" style="margin-bottom: 3px;"><a title="设置私密照片" style="color: inherit; text-decoration: none;" href="/backend/photo/private/{{ photo.id }}/">Private</a></button>
+                                {% else %}
+                                    <button class="btn btn-danger" style="margin-bottom: 3px;"><a title="设置公开照片" style="color: inherit; text-decoration: none;" href="/backend/photo/non-private/{{ photo.id }}/">Public</a></button>
+                                {% endif %}
+                                <button class="btn btn-info" style="margin-bottom: 3px;"><a title="编辑照片信息" style="color: inherit; text-decoration: none;" href="/backend/photo/info-edit/{{ photo.id }}/">Edit</a></button>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+                </table>
+                <div style="text-align: right; margin-right: 15px;">
+                    {{ render_pagination(pagination) }}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

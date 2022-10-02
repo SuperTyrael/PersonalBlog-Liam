@@ -1,0 +1,236 @@
+{% macro photo_card(photo) %}
+    <div class="photo-card card">
+        <a class="card-thumbnail" href="{{ url_for('gallery_bp.photo', photo_id=photo.id) }}">
+            <img class="card-img-top portrait" src="{{ photo.save_path }}">
+        </a>
+        <p class="text-muted">{{ photo.title }}</p>
+        <div class="card-body">
+            <span class="fa fa-heart-o"></span> {{ photo.likes|length }}
+            <span class="fa fa-comment-o"></span> {{ photo.comments|length }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro blog_card(blog) %}
+    <div style="background: white; border-radius: 5px;" class="media mb-1 mb-sm-2 p-2 p-lg-3 blog-brief-div">
+        <div class="align-self-center mr-2 mr-lg-3 w-25 modal-open">
+            <a href="/blog/article/{{ blog.id }}/">
+                <img class="w-100 article-img" src="{{ blog.pre_img }}" alt="{{ blog.title }}">
+            </a>
+        </div>
+        <div class="media-body">
+            <div class="text-muted mb-2 f-12">
+                <span class="badge badge-inverse"><i class="fa fa-user"></i> Blog</span>
+                <span class="badge badge-inverse"><i class="fa fa-calendar-times-o ml-2 mr-1"></i>{{ moment(blog.create_time, local=True).fromNow(refresh=True) }}</span>
+            </div>
+            <h5 class="text-info">
+                <a style="text-decoration: none;" class="text-info" href="/blog/article/{{ blog.id }}/">{{ blog.title }}</a>
+            </h5>
+            <p class="d-none d-sm-block mb-2 f-15">{{ blog.introduce|striptags|truncate(200) }}</p>
+            <p class="d-block d-sm-none mb-2 f-15">{{ blog.introduce|striptags|truncate(100) }}</p>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro moment_card(comment) %}
+    <span style="font-size: 12px;" class="text-muted moment-p" data-toggle="tooltip" data-placement="top" title="{{ comment.timestamp  }}">
+                            <i class="fa fa-clock-o"></i> {{ moment(comment.timestamp, local=True).fromNow(refresh=True)  }}</span>
+    {% if comment.replied_id %}
+        <div class="moment-div">
+            <p style="color: dodgerblue">{{ comment.replied.author.username }}</p>
+            <p class="moment-p">{{comment.replied.body|safe}}</p>
+        </div>
+    {% endif %}
+    <div>
+        {{ comment.body|safe }}
+        <p class="moment-p">来自:<a style="color: dodgerblue; text-decoration: none;" href="/blog/article/{{ comment.blog.id }}">{{ comment.blog.title }}</a></p>
+        <hr>
+    </div>
+{% endmacro %}
+
+{% macro photo_moment_card(comment) %}
+    <span style="font-size: 12px;" class="text-muted moment-p" data-toggle="tooltip" data-placement="top" title="{{ comment.timestamp  }}">
+                            <i class="fa fa-clock-o"></i> {{ moment(comment.timestamp, local=True).fromNow(refresh=True)  }}</span>
+    {% if comment.replied_id %}
+        <div class="moment-div">
+            <p style="color: dodgerblue; text-decoration: none;">{{ comment.replied.author.username }}</p>
+            <p class="moment-p">{{comment.replied.body|safe}}</p>
+        </div>
+    {% endif %}
+    <div>
+        {{ comment.body|safe }}
+        <p class="moment-p">来自:<a style="color: dodgerblue; text-decoration: none;" href="/gallery/photo/{{ comment.photo.id }}">{{ comment.photo.title }}</a></p>
+        <hr>
+    </div>
+{% endmacro %}
+
+{% macro tool_card(head, body, link, fa) %}
+    <div class="col-md-6 col-lg-4 col-xl-3 px-lg-2 mb-3 tool">
+        <div class="card">
+            <div class="card-header">
+                <i class="{{ fa }}"></i> {{ head }}
+            </div>
+            <div class="card-body text-muted tool-des">
+                {{ body }}
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-secondary float-right"><a style="color: inherit; text-decoration: none" href="/tool/{{ link }}/">开始使用</a></button>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% macro tool_bread(name, s_name) %}
+    <nav style="padding-top: 10px" aria-label="breadcrumb">
+        <ol class="breadcrumb bg-white">
+            <li class="breadcrumb-item">
+                <a class="text-info-a" href="/">首页</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-info-a" href="/tool/">在线工具</a>
+            </li>
+            <li class="breadcrumb-item active d-none d-md-block" aria-current="page">{{ name }}</li>
+            <li class="breadcrumb-item active d-md-none" aria-current="page">{{ s_name }}</li>
+        </ol>
+    </nav>
+{% endmacro %}
+
+{% macro gallery_bread(name, s_name) %}
+    <nav style="padding-top: 10px" aria-label="breadcrumb">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item">
+                <a class="text-info-a" href="/">首页</a>
+            </li>
+            <li class="breadcrumb-item active d-none d-md-block" aria-current="page">{{ name }}</li>
+            <li class="breadcrumb-item active d-md-none" aria-current="page">{{ s_name }}</li>
+        </ol>
+    </nav>
+{% endmacro %}
+
+{% macro _arg_url_for(endpoint, base) %}
+    {# calls url_for() with a given endpoint and **base as the parameters,
+   additionally passing on all keyword_arguments (may overwrite existing ones)
+ #}
+    {%- with kargs = base.copy() -%}
+        {%- do kargs.update(kwargs) -%}
+        {{ url_for(endpoint, **kargs) }}
+    {%- endwith %}
+{%- endmacro %}
+
+{% macro render_pagination(pagination,
+                           endpoint=None,
+                           prev=('&laquo;')|safe,
+                           next=('&raquo;')|safe,
+                           size=None,
+                           ellipses='…',
+                           args={},
+                           fragment='',
+                           align=''
+                           )-%}
+    {% if fragment != '' and not fragment.startswith('#') %}{% set fragment = '#' + fragment %}{% endif %}
+    {% with url_args = {} %}
+        {%- do url_args.update(request.view_args if not endpoint else {}),
+       url_args.update(request.args if not endpoint else {}),
+       url_args.update(args) -%}
+        {% with endpoint = endpoint or request.endpoint %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination{% if size %} pagination-{{ size }}{% endif %} {% if align == 'center' %}justify-content-center{% elif align == 'right' %}justify-content-end{% endif %}"{{ kwargs|xmlattr }}>
+                    {# prev and next are only show if a symbol has been passed. #}
+                    {% if prev != None -%}
+                        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                            <a class="page-link" href="{{ _arg_url_for(endpoint, url_args, page=pagination.prev_num) if pagination.has_prev else '#' }}{{ fragment }}">{{ prev }}</a>
+                        </li>
+                    {%- endif -%}
+
+                    {%- for page in pagination.iter_pages() %}
+                        {% if page %}
+                            {% if page != pagination.page %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ _arg_url_for(endpoint, url_args, page=page) }}{{ fragment }}">{{ page }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">{{ page }} <span class="sr-only">(current)</span></a>
+                                </li>
+                            {% endif %}
+                        {% elif ellipses != None %}
+                            <li class="page-item disabled"><a class="page-link" href="#">{{ ellipses }}</a></li>
+                        {% endif %}
+                    {%- endfor %}
+
+                    {% if next != None -%}
+                        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                            <a class="page-link" href="{{ _arg_url_for(endpoint, url_args, page=pagination.next_num) if pagination.has_next else '#' }}{{ fragment }}">{{ next }}</a>
+                        </li>
+                    {%- endif -%}
+                </ul>
+            </nav>
+        {% endwith %}
+    {% endwith %}
+{% endmacro %}
+
+{% macro render_pager(pagination,
+                      fragment='',
+                      prev=('<span aria-hidden="true">&larr;</span>')|safe,
+                      next=('<span aria-hidden="true">&rarr;</span>')|safe,
+                      align='') -%}
+    <nav aria-label="Page navigation">
+        <ul class="pagination {% if align == 'center' %}justify-content-center{% elif align == 'right' %}justify-content-end{% endif %}">
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link"
+                   href="{{ url_for(request.endpoint, page=pagination.prev_num, **kwargs) + fragment if pagination.has_prev else '#' }}">
+                    {{ prev }}
+                </a>
+            </li>
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link"
+                   href="{{ url_for(request.endpoint, page=pagination.next_num, **kwargs) + fragment if pagination.has_next else '#' }}">
+                    {{ next }}
+                </a>
+            </li>
+        </ul>
+    </nav>
+{%- endmacro %}
+
+{% macro nav_item(endpoint, text, fa) %}
+    <li class="nav-item" style="margin-right: 50px;">
+        <a class="nav-link {% if request.endpoint and request.endpoint==endpoint %}active{% endif %}" href="{{ url_for(endpoint) }}">
+            <i class="{{ fa }}"></i>
+            {{ text }}
+        </a>
+    </li>
+{% endmacro %}
+
+<!-- {% macro dropmenu(endpoint) %}
+    <li class="nav-item dropdown {% if request.endpoint == endpoint %}active{% endif %}">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-subway"></i> SOUL
+        </a>
+        <div class="dropdown-menu mt-0 rounded-0 border-0" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('soul_bp.index') }}"><i class="fa fa-file-code-o mr-2"></i>毒鸡汤</a> 
+            <a class="dropdown-item" href="/ts-poem/"><i class="fa fa-file-text-o mr-2"></i>唐宋诗</a>
+            <a class="dropdown-item" href="/song-ci/"><i class="fa fa-file-text mr-2"></i>宋词</a>
+            <a class="dropdown-item" href="/api/introduce/"><i class="fa fa-exchange mr-2"></i>API</a>
+        </div>
+    </li>
+{% endmacro %} -->
+
+{% macro poem_slider(active) %}
+    <div class="list-group">
+        <a {% if active == '搜索' %}style="color: #20c997"{% endif %}class="list-group-item text-info-a" href="/tool/search/"><i class="fa fa-search fa-fw" aria-hidden="true"></i>&nbsp; 搜索</a>
+    </div>
+{% endmacro %}
+
+{% macro page_hint(pagination2) %}
+    {% if pagination2.total == 1 %}
+        <p class="p-page">总共1条记录</p>
+    {% else %}
+        {% if pagination2.page * 10 < pagination2.total %}
+            <p class="p-page">当前第{{ (pagination2.page - 1)*10 + 1  }}条-{{ pagination2.page*10 }}条记录</p>
+        {% else %}
+            <p class="p-page">当前第{{ (pagination2.page - 1)*10 + 1  }}条-{{ pagination2.total }}条记录</p>
+        {% endif %}
+    {% endif %}
+
+{% endmacro %}

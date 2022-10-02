@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% block title %}
+    500 Error
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            {% include "_flash.html" %}
+            <br>
+            <div class="">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <img class="rounded-10" style="width: 50%; height: 50%;" src="/static/img/404.jpg"/>
+                    </div>
+                    <h4 style="padding-left: 10px" class="text-info"><strong>Internal Server Error</strong></h4>
+                    <div class="card-footer ">
+                        <button class="btn btn-info float-right"><a style="color: inherit; text-decoration: none;" href="/">Back Home/a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+{% endblock %}

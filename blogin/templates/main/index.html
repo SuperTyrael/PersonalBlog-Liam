@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% from "macro.html" import render_pager  with context %}
+{% block title %}
+    Home
+{% endblock %}
+{% block content %}
+    <main style="background: #e3e3e3">
+        {{ moment.include_moment() }}　　
+        {{ moment.locale(auto_detect=True) }}
+        <br>
+        <div class="container">
+            {% include "_flash.html" %}
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- 网站个人资料 -->
+                    <div class="card mb-3 mt-2">
+                        <div class="text-muted card-header ">
+                            <strong>Liam</strong>'s INFO
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <img class="img-fluid rounded" alt="OwnerAvatar" src="{{ su.avatar }}">
+                                </div>
+                                <div class="col-9">
+                                    <h3><strong>Liam</strong></h3>
+                                    <p class="text-muted">Peronsal Website: <i class="fa fa-link"></i> <a class="text-muted gray-a" href="#" target="_blank">Liam's Place</a></p>
+                                    <p class="text-muted">Created at: <i class="fa fa-clock-o"></i> 2020-12-20</p>
+                                    <p class="text-muted">Mail: <i class="fa fa-envelope"></i> tyrael-liang@foxmail.com</p>
+                                    <br>
+                                    <a href="/loveme/" class="btn btn-danger float-left"><i class="fa fa-heart-o"></i> {{ loves }} LIKES</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 博客列表 -->
+                    <div class="summary-list">
+                        {% for blog in blogs %}
+                            <div style="background: white; border-radius: 5px;" class="media mb-1 mb-sm-2 p-2 p-lg-3 blog-brief-div">
+                                <div class="align-self-center mr-2 mr-lg-3 w-25 modal-open">
+                                    <a href="/blog/article/{{ blog.id }}/">
+                                        <img class="w-100 article-img" src="{{ blog.pre_img }}" alt="{{ blog.title }}">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <div class="text-muted mb-2 f-12">
+                                        <span class="badge badge-inverse"><i class="fa fa-user"></i> Liam</span>
+                                        <span class="badge badge-inverse"><i class="fa fa-calendar-times-o ml-2 mr-1"></i>{{ moment(blog.create_time, local=True).fromNow(refresh=True) }}</span>
+                                    </div>
+                                    <h5 class="text-info">
+                                        <a style="text-decoration: none;" class="text-info" href="/blog/article/{{ blog.id }}/">{{ blog.title }}</a>
+                                    </h5>
+                                    <p class="d-none d-sm-block mb-2 f-15">{{ blog.introduce|striptags|truncate(100) }}</p>
+                                    <p class="d-block d-sm-none mb-2 f-15">{{ blog.introduce|striptags|truncate(50) }}</p>
+                                    <div class="text-muted mb-0 f-12">
+                                        <a class="text-info" style="text-decoration: none;" href="/blog/cate/{{ blog.type_id }}/" title="More articles">
+                                            <span class="badge badge-inverse"><i class="fa fa-book mr-1"></i>{{ cates[loop.index0] }}</span>
+                                        </a>
+                                        <span class="badge badge-inverse"><i class="fa fa-eye ml-2 mr-1"></i>{{ blog.read_times }}</span>
+                                        <span class="badge badge-inverse"><i class="fa fa-comment-o ml-2 mr-1"></i>{{ blog.comments|length }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if pagination.total > per_page %}
+                        <div class="float-right">
+                            {{ render_pager(pagination) }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    {% include "slider.html" %}
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+        <script>
+        $(function () {
+            $(document).ready(function () {
+                getLocation();
+                if(sessionStorage.getItem("isReloadIndex")){
+                console.log("页面被刷新");
+                }else{
+                    var txt;
+                    if (confirm("This website will put some small files called cookies on your device to make our site work. We highly suggest you click CONFIRM for better using experience.")) {
+                        console.log("您按了确定");
+                    } else {
+                        console.log("您按了取消");
+                    }
+                    sessionStorage.setItem("isReloadIndex", true)
+                }
+                    });
+        })
+
+        function getLocation()
+          {
+          if (navigator.geolocation)
+            {
+            navigator.geolocation.getCurrentPosition(showPosition);
+            }
+          else{return;}
+          }
+
+        function showPosition(){
+            return;
+        }
+    </script>
+{% endblock %}

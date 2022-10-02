@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block title %}
+    {{ current_user.username }}'s Profile Edit
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="container">
+            <br>
+            {% include '_flash.html' %}
+            <div class="jumbotron">
+                <div class="row">
+                    <div style="margin-bottom: 10px" class="col-md-8">
+                        <img src="/static/img/index.jpg" class="rounded img-fluid">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-3 w-100 bg-light">
+                            <div class="card-header"><h4>Edit Profile</h4></div>
+                            <div class="card-body">
+                                <form action="/accounts/profile/edit/" method="post" enctype="multipart/form-data">
+                                    {{ form.csrf_token }}
+                                    {{ wtf.form_field(form.user_name) }}
+                                    {{ wtf.form_field(form.website) }}
+                                    {{ wtf.form_field(form.avatar) }}
+                                    <p style="font-size: 14px;" class="text-muted"><strong>Tip: profile photo should less than 3 MB</strong></p>
+                                    {{ wtf.form_field(form.slogan) }}
+                                    {{ form.submit }}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

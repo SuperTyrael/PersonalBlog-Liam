@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% from "macro.html" import moment_card, photo_moment_card with context %}
+{% block title %}
+    {{ current_user.username }}' personal profile
+{% endblock %}
+{% block content %}
+    {{ moment.locale(auto_detect=True) }}
+    <main>
+        <div class="container">
+            <br>
+            {% include "_flash.html" %}
+            <div class="card">
+                <div class="text-muted card-header">
+                    <strong>{{ current_user.username }}</strong>'s personal profile
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <img class="img-fluid rounded " src="{{ current_user.avatar }}">
+                        </div>
+                        <div class="col-9">
+                            <h3><strong>{{ current_user.username }}</strong></h3>
+                            <p class="text-muted">Personal Web: <i class="fa fa-link"></i> <a class="text-info-a" href="{{ current_user.website }}" target="_blank">{{ current_user.website }}</a></p>
+                            <p class="text-muted">Created at: <i class="fa fa-clock-o"></i> {{ current_user.create_time }}</p>
+                            <p class="text-muted">Mail: <i class="fa fa-envelope"></i> {{ current_user.email }}</p>
+                            <p class="text-muted">Slogan: <i class="fa fa-text-width"></i> {{ current_user.slogan }}</p>
+                            <p id="location" class="text-muted"><i class="fa fa-location-arrow"></i> Getting location, please wait</p>
+                            <br>
+                            <button class="btn btn-danger float-right gutter-right"><a style="color: white;text-decoration: none" href="/accounts/password/change/">Change Password</a></button>
+                            <button class="btn btn-success float-right gutter-right"><a style="color: white;text-decoration: none" href="/accounts/profile/edit/">Edit Profile</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active text-info-a" data-toggle="tab" href="#moment"><i class="fa fa-photo"></i> Posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-info-a" data-toggle="tab" href="#notReadNotification"><i class="fa fa-bell"></i> Notifications <span class="badge badge-secondary">{{ notifies|length }}</span>
+                        {% if nft_counts %}
+                            <span class="badge badge-info">{{ nft_counts }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link text-info-a" data-toggle="tab" href="#loginLog"><i class="fa fa-history"></i> 登录日志</a>
+                </li> -->
+            </ul>
+
+            <div class="tab-content">
+                <!-- 动态栏 -->
+                <div id="moment" class="container tab-pane active"><br>
+                    <div style="margin-bottom: 20px">
+                        <ul class="nav nav-pills" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="pill" href="#blog">Blog</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <!-- 博客评论动态 -->
+                        <div id="blog" class="tab-pane active">
+                            {% for comment in blogComments %}
+                                {{ moment_card(comment) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 关于通知的消息 -->
+                <div id="notReadNotification" class="container tab-pane fade"><br>
+                    {% if notifies %}
+                        <div class="text-muted float-right"><span style="min-height: 8px;" class="badge badge-danger"><a style="color: inherit; text-decoration: none;" href="/accounts/mark-all/">Mark ALL Read</a></span></div>
+                        <br>
+                        <hr>
+                        {% for notify in notifies %}
+                            <div>
+                                <div class="float-right text-muted"><span class="badge badge-light"><a style="color: inherit; text-decoration: none;" href="/accounts/mark/{{ notify.id }}/">Read</a></span></div>
+                                <span style="font-size: 14px;" class="text-muted"><i class="fa fa-clock-o"></i> {{ moment(notify.timestamp, local=True).fromNow(refresh=True)  }}</span>
+                                <p>User  <strong>{{ notify.send_user }}</strong>  in
+                                    <!-- {% if notify.type == 0 %} -->
+                                        <span class="badge badge-dark">Blog</span><a href="/blog/article/{{ notify.target_id }}">{{ notify.target_name }}</a>
+                                    <!-- {% else %}
+                                        <span class="badge badge-success">Photos</span><a href="/gallery/photo/{{ notify.target_id }}">{{ notify.target_name }}</a>
+                                    {% endif %} -->
+                                    replies</p>
+                                <h6>{{ notify.msg|safe }}</h6>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    {% else %}
+                        <div>No Notifications</div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+    <script>
+        var x=document.getElementById("location");
+        $(function () {
+            $(document).ready(function () {
+                getLocation();
+                if(sessionStorage.getItem("isReloadLocs")){
+                    var locs = {{ location | tojson | safe}};
+                    x.innerHTML=locs;
+                }else{
+
+                    if (confirm("Location Authentation\nPlease allow this website to use your location information")) {
+                        var locs = {{ location | tojson | safe}};
+                        x.innerHTML=locs;
+                    } else {
+                        x.innerHTML="PERMISSION DENIED: The user rejects the request for a geographic location";
+                    }
+                    sessionStorage.setItem("isReloadLocs", true);
+                }
+                    });
+        })
+
+        function getLocation()
+          {
+          if (navigator.geolocation)
+            {
+            navigator.geolocation.getCurrentPosition(showPosition);
+            }
+          else{return;}
+          }
+
+        function showPosition(position)
+          {
+              return;
+          }
+
+        function getPoi(x,y){
+                var token = "wOxcyAMrGdyvhvwEvRUgQueQivbGO0lU";
+                var url = "http://api.map.baidu.com/geocoder/v2/?location="+y+","+x+
+                    "&output=json&ak="+token+"&jsoncallback=callbackFunction";
+
+                // "http://api.map.baidu.com/geocoder/v2/?output=json&ak=wOxcyAMrGdyvhvwEvRUgQueQivbGO0lU&location=x,y";
+
+
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType : 'jsonp',
+                    success: function(data){//具体的返回结果结构可以查阅API
+                        if(data.status == 0){
+                            var address = data.result.formatted_address;
+                            var description = data.result.sematic_description;
+                            alert(address+description);
+                        }
+                    },
+                    error : function(e){　　　　//报错找百度
+                        window.open("https://www.baidu.com/s?ie=utf-8&rsv_bp=1&rsv_idx=1&tn=baidu&wd="+e);
+                    }
+                });
+            }
+
+    </script>
+{% endblock %}

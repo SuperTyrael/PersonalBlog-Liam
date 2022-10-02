@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+{% extends "backend/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block head %}
+    {{super()}}
+{% endblock %}
+{% block title %}Create Blog{% endblock %}
+{%block content%}
+    <body>
+    <div class="container">
+        {% for message in get_flashed_messages(with_categories=True) %}
+            <div style="margin-top: 5px" class="alert alert-{{ message[0] }}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message[1] }}
+            </div>
+        {% endfor %}
+        <form method="post" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            {{wtf.form_field(form.title)}}
+            <div class="row">
+                <div class="col-md-2">
+                    {{wtf.form_field(form.blog_type)}}
+                </div>
+                <div class="col-md-2">
+                    {{wtf.form_field(form.blog_level)}}
+                </div>
+                <div class="col-md-2">
+                    {{wtf.form_field(form.blog_img_file)}}
+                </div>
+            </div>
+            {{wtf.form_field(form.brief_content)}}<br>
+            {{ form.body }}<br>
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-2" style="text-align: right;">
+                    {{ wtf.form_field(form.submit, class="btn btn-info") }}
+                </div>
+            </div>
+        </form>
+    </div>
+    {{ ckeditor.load() }}
+    {{ ckeditor.config(name='body') }}
+    <br>
+    <script>
+
+        $(function () {
+            $(document).ready(function () {
+            });
+        })
+
+        CKEDITOR.on( 'instanceReady', function( evt ) {
+            evt.editor.dataProcessor.htmlFilter.addRules( {
+                elements: {
+                    img: function(el) {
+                        el.addClass('img-fluid d-block mx-auto');
+                    },
+                    table: function (el){
+                        el.addClass('table table-responsive');
+                    },
+                    thead: function (el){
+                        el.addClass('thead-light');
+                    },
+                    blockquote: function (el){
+                        el.addClass('m-blockquote');
+                    }
+                }
+            });
+        });
+
+    </script>
+    </body>
+{% endblock %}

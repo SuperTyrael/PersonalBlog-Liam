@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block head %}
+    {{ super() }}
+    <style>
+        .span-auth{
+            border-bottom: solid 2px #426aff;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .a-third-party-icon{
+            margin-top: 8px;
+            margin-right: 8px;
+        }
+
+        .div-third-party{
+            border-top: solid 1px #cccccc; margin-bottom: 5px;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    Login
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            <br>
+            {% include "_flash.html" %}
+            <div class="jumbotron">
+                <div class="row">
+                    <div style="margin-bottom: 10px" class="col-md-8">
+                        <img src="/static/img/login.jpg" class="rounded img-fluid">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-3 w-100 bg-light">
+                            <div class="card-header"><h4 class="text-muted"><strong>Login</strong></h4></div>
+                            <div class="card-body">
+                                <form action="/auth/login/" method="post">
+                                    {{ form.csrf_token }}
+                                    {{ wtf.form_field(form.usr_email) }}
+                                    {{ wtf.form_field(form.password) }}
+                                    {{ wtf.form_field(form.remember_me) }}
+                                    {{ form.submit }}
+                                </form>
+                                <hr>
+                                <p class="small"><a style="text-decoration: none" href="/auth/register/">Registration</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- <script>
+        function getLocation(){ 
+            if (navigator.geolocation){ 
+                navigator.geolocation.getCurrentPosition(showPosition,showError); 
+            }else{ 
+                alert("浏览器不支持地理定位。"); 
+            } 
+        }
+        function showPosition(position){
+            console.log(position); 
+            var lat = position.coords.latitude; //纬度 
+            var lag = position.coords.longitude; //经度 
+            console.log('纬度:'+lat+',经度:'+lag); 
+        }
+    </script> -->
+{% endblock %}

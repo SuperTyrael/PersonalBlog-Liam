@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    {{ share.load() }}
+    {{ ckeditor.load_code_theme() }}
+    <script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
+    <link type="text/css" href="/static/css/style.css">
+    <style>
+        .ck-editor__editable {
+            min-height: 100px;
+        }
+        @media screen and (min-width: 1367px){
+            .history-fixed-div {
+                position: fixed;
+                top: 6.5em;
+                user-select: none;
+                left: calc((100vw - 1000px)/2 - 330px);
+                margin: 5px;
+                padding: 10px;
+                border-radius: 5px;
+                background: #ffffff;
+                width: 15em;
+            }
+        }
+        @media screen and (max-width: 1660px) {
+            .history-fixed-div{
+                display: none;
+            }
+        }
+        .p-line-bottom{
+            border-bottom: 1px solid #cccccc;
+        }
+    </style>
+    {{ moment.locale(auto_detect=True) }}
+{% endblock %}
+{% block title %}
+    {{ blog.title }}
+{% endblock %}
+{% block content %}
+    <main style="background: #e3e3e3">
+        <div class="container">
+            {% include "_top.html" %}
+            {% for message in get_flashed_messages(with_categories=True) %}
+                <div style="margin-top: 5px" class="alert alert-{{ message[0] }}">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message[1] }}
+                </div>
+            {% endfor %}
+            <nav style="padding-top: 10px" aria-label="breadcrumb">
+
+                <ol class="breadcrumb bg-white">
+                    <li class="breadcrumb-item">
+                        <a class="text-info-a" href="/">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a class="text-info-a" href="/blog/cate/{{ cate.id }}/">{{ cate.name }}</a>
+                    </li>
+                    <li class="breadcrumb-item active d-none d-md-block" aria-current="page">{{ blog.title }}</li>
+                    <li class="breadcrumb-item active d-md-none" aria-current="page">Now</li>
+                    {% if current_user.role_id == 1 %}
+                        <li class="breadcrumb-item float-right" aria-current="page"><a href="/backend/blog/edit/{{ blog.id }}">Edit article</a></li>
+                    {% endif %}
+                </ol>
+            </nav>
+            <div class="blog-content-div">
+                <div class="text-center">
+                    <h2 class="blog-title">{{ blog.title }}</h2>
+                </div>
+                <div class="text-center">
+                    <span class="badge badge-important"><i class="fa fa-calendar"></i> {{blog.create_time}}</span>
+                    <span class="badge badge-important"><i class="fa fa-tag"></i> {{cate.name}}</span>
+                    <span class="badge badge-important"><i class="fa fa-book"></i> {{blog.read_times}}</span>
+                    <hr>
+                </div>
+                <div class="text-muted">
+                    <h1 class="introduce-h1">Introduction</h1>
+                    {{ blog.introduce }}
+                    <hr>
+                </div>
+                <div class="div-article">
+                    <article>
+                        {{ blog.content|safe }}
+                    </article>
+                </div>
+            </div>
+            <div class="blog-content-div">
+                {% include "comment.html" %}
+                <p class="text-muted"><strong>Totally have {{ comments|length }} comments</strong></p>
+                <hr>
+                {% include "commentContent.html" %}
+            </div>
+        </div>
+
+    </main>
+    <script>
+        let editor;
+        ClassicEditor.create( document.querySelector( '#comment-editor' ), {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                    { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                ]
+            }
+        } ).then(newEditor=>{
+            editor = newEditor;
+        })
+            .catch( error => {
+                console.log( error );
+            } );
+
+        function submitComment(){
+            const comment = editor.getData();
+            let blogId = $("#subCommentBtn").data('blogid');
+            if (!comment){
+                $("#commentErrorHint").removeAttr('hidden');
+                $("#commentErrorHint").show().delay(3000).hide(500);
+                return false;
+            }
+            $.ajax({
+                url: "/blog/comment/",
+                type: "post",
+                data : {'comment': comment, 'blogID': blogId},
+                success: function (){
+                    window.location.reload();
+                }
+            })
+        }
+
+        function replyUserComment(){
+            let reply = editor.getData();
+            let blogId = $("#subCommentBtn").data('blogid');
+            let parent = sessionStorage.getItem('parent');
+            let replyID = sessionStorage.getItem('rep_id');
+            if(!reply){
+                $("#commentErrorHint").removeAttr('hidden');
+                $("#commentErrorHint").show().delay(2000).hide(200);
+                return false;
+            }
+            if (parent == 'null'){
+                parent = replyID;
+            }
+            $.ajax({
+                url: "/blog/comment/",
+                type: "post",
+                data: {'comment': reply, 'blogID': blogId, 'parentID': parent, 'replyID': replyID},
+                success: function (){
+                    window.location.reload();
+                }
+            })
+        }
+
+        function submitDelete(commid){
+            $.ajax({
+                url:'/blog/comment/delete/',
+                type: 'POST',
+                data: {'comm_id': commid},
+                success: function (){
+                    window.location.reload();
+                },
+                error: function (){}
+            })
+        }
+    </script>
+{% endblock %}

@@ -1,2 +1,0 @@
-unset key
-plot[-1.564000:-1.543100][53.801600:53.811000]"finaldata.out" with lines lw 2 lc 'black', "route.out" with lines lw 3 lc 'red'

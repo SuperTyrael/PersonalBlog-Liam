@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}
+    All articles in {{ cate.name }} category
+{% endblock %}
+{% block content %}
+    <main style="background: #e3e3e3">
+        {{ moment.include_moment() }}　　
+        {{ moment.locale(auto_detect=True) }}
+        <div class="container">
+            <div class="row">
+                <div style="margin-top: 10px" class="col-md-8">
+                    <div class="description bg-white px-3 pt-3 pb-1">
+                        <p class="float-right mb-0">Total <span class="mx-2 text-info">{{ blogs|length }}</span> articles</p>
+                        <h5 class="f-17"><strong>Category：{{ cate.name }}</strong></h5>
+                        <p style="padding-top: 8px" class="f-16">{{ cate.description }}</p>
+                    </div>
+                    <div class="summary-list">
+                        {% for blog in blogs %}
+                            {% if blog.delete_flag == 1 %}
+                                <div style="background: white; border-radius: 5px;" class="media mb-1 mb-sm-2 p-2 p-lg-3 blog-brief-div">
+                                    <div class="align-self-center mr-2 mr-lg-3 w-25 modal-open">
+                                        <a href="/blog/article/{{ blog.id }}/" target="_blank">
+                                            <img class="w-100 article-img" src="{{ blog.pre_img }}" alt="{{ blog.title }}">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="text-muted mb-2 f-12">
+                                            <span class="badge badge-inverse"><i class="fa fa-user"></i> Liam</span>
+                                            <span class="badge badge-inverse"><i class="fa fa-calendar-times-o ml-2 mr-1"></i>{{ moment(blog.create_time, local=True).fromNow(refresh=True) }}</span>
+                                        </div>
+                                        <h5 class="text-info">
+                                            <a style="text-decoration: none;" class="text-info" href="/blog/article/{{ blog.id }}/" target="_blank">{{ blog.title }}</a>
+                                        </h5>
+                                        <p class="d-none d-sm-block mb-2 f-15">{{ blog.introduce|striptags|truncate(200) }}</p>
+                                        <p class="d-block d-sm-none mb-2 f-15">{{ blog.introduce|striptags|truncate(100) }}</p>
+                                        <div class="text-muted mb-0 f-12">
+                                            <a class="text-info" style="text-decoration: none;" href="/blog/cate/{{ blog.type_id }}/" title="More articles in this category">
+                                                <span class="badge badge-inverse"><i class="fa fa-book mr-1"></i>{{ cate.name }}({{ blogs|length }})</span></a>
+                                            <span class="badge badge-inverse"><i class="fa fa-eye ml-2 mr-1"></i>{{ blog.read_times }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    {% include "slider.html" %}
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        // 打开页面自动加载
+        $(function () {
+            $(document).ready(function () {
+                $("#oneWord").text(sessionStorage.getItem("soul"))
+                highlight();
+            });
+        })
+
+
+        function highlight()
+        {
+            var cata = {{ cate.name | tojson | safe}};
+            var contents = document.getElementsByClassName("cataContent");
+            for (var i=0; i<contents.length; i++){
+                if (contents[i].textContent===cata){
+                    contents[i].parentElement.classList.add("active");
+                    contents[i].parentElement.setAttribute("style", "background-color:#17a2b8!important", )
+                }
+            }
+        }
+    </script>
+{% endblock %}

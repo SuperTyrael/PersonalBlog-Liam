@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "macro.html" import gallery_bread with context %}
+{% block head %}
+    {{ super() }}
+    <style>
+        .border-card{
+            border: 5px solid rgba(0 123 255 / 5%);
+            margin: 0px 0px 5px 0px;
+        }
+        .photo-link{
+            text-decoration: none;
+            color: #0f0f0f;
+        }
+        a:hover{
+            color: #9d9d9d;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    Gallery
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            {% include "_flash.html" %}
+            <div>
+                {{ gallery_bread("Photos", 'Gallery') }}
+                {% for photo in photos %}
+                    <div class="border-card card photo-card">
+                        <a href="/gallery/photo/{{ photo.id }}" class="card-thumbnail">
+                            <img alt="{{ photo.title }}" class="card-img-top portrait" src="{{ photo.save_path_s }}">
+                        </a>
+                        <div class="card-body">
+                            <a class="photo-link" href="/gallery/photo/{{ photo.id }}"> {{ photo.title }} </a>
+                            <div class="row">
+                                <div class="col-lg-8 text-right">
+                                    <i class="fa fa-calendar"></i> {{ (photo.create_time|split)[0] }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if loop.index == 9 %}
+                        <div class="text-center">
+                            <button class="btn btn-outline-success"><a style="color: inherit;text-decoration: none;" href="{{ url_for('.index') }}"><span><i class="fa fa-exchange"></i> Other more</span></a></button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock %}
