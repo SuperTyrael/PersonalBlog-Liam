@@ -24,7 +24,7 @@ whooshee = Whooshee()
 
 @login_manager.user_loader
 def load_user(user_id):
-    from blogin.models import User
+    from blog.models import User
     user = User.query.filter_by(id=user_id).first()
     return user
 

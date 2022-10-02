@@ -1,15 +1,15 @@
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app, jsonify, Flask
-from blogin.models import Blog, BlogType, LoveMe, LoveInfo, BlogComment, Photo, Notification, VisitStatistics, \
+from blog.models import Blog, BlogType, LoveMe, LoveInfo, BlogComment, Photo, Notification, VisitStatistics, \
     LikeStatistics, CommentStatistics, Tag, User, FriendLink, Plan
-from blogin.extension import db
+from blog.extension import db
 from flask_login import current_user, login_required
-from blogin.decorators import statistic_traffic
+from blog.decorators import statistic_traffic
 import datetime
-from blogin.utils import redirect_back
+from blog.utils import redirect_back
 import logging
 from logging.handlers import RotatingFileHandler
-import blogin
+import blog
 
 blog_bp = Blueprint('blog_bp', __name__)
 

@@ -3,9 +3,9 @@ import datetime
 from datetime import timedelta
 from flask import Blueprint, render_template, jsonify
 from flask_login import login_required
-from blogin.models import VisitStatistics, CommentStatistics, LikeStatistics
+from blog.models import VisitStatistics, CommentStatistics, LikeStatistics
 
-from blogin.decorators import permission_required
+from blog.decorators import permission_required
 
 index_bp_be = Blueprint('index_bp_be', __name__, url_prefix='/backend')
 

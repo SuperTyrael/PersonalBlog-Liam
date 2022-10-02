@@ -4,13 +4,13 @@ import os
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, current_app, \
     send_from_directory
 from flask_ckeditor import upload_fail, upload_success
-from blogin import basedir
-from blogin.blueprint.backend.forms import PostForm, EditPostForm
-from blogin.models import BlogType, Blog, States
-from blogin.extension import db
-from blogin.utils import get_current_time, create_path, get_md5
+from blog import basedir
+from blog.blueprint.backend.forms import PostForm, EditPostForm
+from blog.models import BlogType, Blog, States
+from blog.extension import db
+from blog.utils import get_current_time, create_path, get_md5
 from flask_login import login_required
-from blogin.decorators import permission_required, db_exception_handle
+from blog.decorators import permission_required, db_exception_handle
 
 be_blog_bp = Blueprint('be_blog_bp', __name__, url_prefix='/backend')
 

@@ -1,6 +1,6 @@
-# Blogin
+# PersonalBlog
 
-Blogin is a personal blog website that base on flask development.
+This is a personal blog website that base on flask development.
 
 ## Introduce
 

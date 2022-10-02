@@ -4,25 +4,25 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
 import click
-from blogin.extension import db, bootstrap, moment, ckeditor, migrate, login_manager, share, avatar, whooshee
+from blog.extension import db, bootstrap, moment, ckeditor, migrate, login_manager, share, avatar, whooshee
 # from blogin.monitor import start_monitor_thread
-from blogin.setting import basedir
+from blog.setting import basedir
 import os
-from blogin.blueprint.front.blog import blog_bp
-from blogin.blueprint.backend.blog_bp import be_blog_bp
-from blogin.blueprint.backend.photo_bp import be_photo_bp
-from blogin.blueprint.backend.account_manage_bp import user_m_bp
-from blogin.blueprint.backend.other_bp import other_bp
-from blogin.blueprint.backend.index_bp import index_bp_be
-from blogin.blueprint.front.auth import auth_bp
-from blogin.blueprint.front.accounts import accounts_bp
-from blogin.blueprint.front.gallery import gallery_bp
+from blog.blueprint.front.blog import blog_bp
+from blog.blueprint.backend.blog_bp import be_blog_bp
+from blog.blueprint.backend.photo_bp import be_photo_bp
+from blog.blueprint.backend.account_manage_bp import user_m_bp
+from blog.blueprint.backend.other_bp import other_bp
+from blog.blueprint.backend.index_bp import index_bp_be
+from blog.blueprint.front.auth import auth_bp
+from blog.blueprint.front.accounts import accounts_bp
+from blog.blueprint.front.gallery import gallery_bp
 # from blogin.blueprint.front.tool import tool_bp
 # from blogin.blueprint.front.soul import soul_bp
 # from blogin.blueprint.front.oauth import oauth_bp
-from blogin.setting import config
-from blogin.models import *
-from blogin.utils import split_space, super_split, conv_list
+from blog.setting import config
+from blog.models import *
+from blog.utils import split_space, super_split, conv_list
 # from blogin import task
 import logging
 

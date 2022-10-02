@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 from wtforms import StringField, SubmitField, BooleanField, FileField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, Regexp
-from blogin.models import User
+from blog.models import User
 
 # noinspection PyMethodMayBeStatic
 

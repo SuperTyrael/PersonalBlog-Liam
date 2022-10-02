@@ -2,9 +2,9 @@
 from flask import Blueprint, render_template, send_from_directory, flash, redirect, request, url_for
 from flask_login import login_required, current_user
 from sqlalchemy.sql.expression import func
-from blogin import basedir, db
-from blogin.models import Photo, Notification, Tag, VisitStatistics, CommentStatistics
-from blogin.decorators import statistic_traffic
+from blog import basedir, db
+from blog.models import Photo, Notification, Tag, VisitStatistics, CommentStatistics
+from blog.decorators import statistic_traffic
 
 gallery_bp = Blueprint('gallery_bp', __name__, url_prefix='/gallery')
 

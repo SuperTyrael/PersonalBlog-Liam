@@ -5,11 +5,11 @@ from datetime import datetime
 from flask import Blueprint, render_template, send_from_directory, request, flash, redirect, url_for, jsonify
 from flask_login import current_user, login_required
 
-from blogin.blueprint.backend.forms import AddFlinkForm, AddPlanForm
-from blogin import basedir
-from blogin.decorators import permission_required
-from blogin.models import FriendLink, States, Plan
-from blogin.extension import db
+from blog.blueprint.backend.forms import AddFlinkForm, AddPlanForm
+from blog import basedir
+from blog.decorators import permission_required
+from blog.models import FriendLink, States, Plan
+from blog.extension import db
 import psutil
 
 other_bp = Blueprint('other_bp', '__name__', url_prefix='/backend')

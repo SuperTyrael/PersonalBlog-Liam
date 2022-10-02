@@ -4,12 +4,12 @@ from flask_login import login_required, current_user
 from imageio import imread
 from wtforms import ValidationError
 
-from blogin.decorators import db_exception_handle
-from blogin.extension import db
-from blogin.forms.auth import ChangePwdForm, EditProfileForm
-from blogin.setting import basedir
-from blogin.models import User, BlogComment, Notification
-from blogin.utils import get_ip_real_add
+from blog.decorators import db_exception_handle
+from blog.extension import db
+from blog.forms.auth import ChangePwdForm, EditProfileForm
+from blog.setting import basedir
+from blog.models import User, BlogComment, Notification
+from blog.utils import get_ip_real_add
 
 accounts_bp = Blueprint('accounts_bp', __name__, url_prefix='/accounts')
 

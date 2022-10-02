@@ -6,7 +6,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 from wtforms import StringField, SelectField, TextAreaField, FileField, SubmitField, DateTimeField, DateField
 from wtforms.validators import Length, DataRequired, ValidationError
-from blogin.models import BlogType, FriendLink
+from blog.models import BlogType, FriendLink
 
 
 class PostForm(FlaskForm):

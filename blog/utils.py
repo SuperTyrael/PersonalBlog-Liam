@@ -20,8 +20,8 @@ import jieba
 import wordcloud as wc
 from PIL import Image, ImageDraw, ImageFont
 
-from blogin.extension import db
-from blogin.setting import basedir
+from blog.extension import db
+from blog.setting import basedir
 from imageio import imread
 
 MONTH = {1: '01-31',

@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
-from blogin.models import User, BlogComment
-from blogin.extension import db
+from blog.models import User, BlogComment
+from blog.extension import db
 from flask_login import login_required
-from blogin.decorators import permission_required
+from blog.decorators import permission_required
 
 user_m_bp = Blueprint('user_m_bp', __name__, url_prefix='/backend/interactive')
 

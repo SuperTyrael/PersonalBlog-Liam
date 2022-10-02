@@ -5,12 +5,12 @@ from datetime import datetime
 from PIL import Image
 from flask import Blueprint, render_template, flash, redirect, url_for, current_app, request
 from flask_login import login_required, current_user
-from blogin.setting import basedir
-from blogin.blueprint.backend.forms import AddPhotoForm, EditPhotoInfoForm
-from blogin.models import Photo, Tag
-from blogin.utils import create_path
-from blogin.extension import db
-from blogin.decorators import permission_required
+from blog.setting import basedir
+from blog.blueprint.backend.forms import AddPhotoForm, EditPhotoInfoForm
+from blog.models import Photo, Tag
+from blog.utils import create_path
+from blog.extension import db
+from blog.decorators import permission_required
 
 be_photo_bp = Blueprint('be_photo_bp', __name__, url_prefix='/backend/photo')
 

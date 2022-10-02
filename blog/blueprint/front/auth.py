@@ -4,12 +4,12 @@ from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_
-from blogin.forms.forms import ResetPwdForm
+from blog.forms.forms import ResetPwdForm
 
-from blogin.forms.auth import RegisterForm, LoginForm
-from blogin.models import User
-from blogin.extension import db
-from blogin.utils import get_ip_real_add, generate_token, Operations, validate_token, generate_ver_code
+from blog.forms.auth import RegisterForm, LoginForm
+from blog.models import User
+from blog.extension import db
+from blog.utils import get_ip_real_add, generate_token, Operations, validate_token, generate_ver_code
 
 auth_bp = Blueprint('auth_bp', __name__, url_prefix='/auth')
 
